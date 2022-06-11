@@ -239,7 +239,7 @@ namespace TheOtherRoles
                             sabotageActive = true;
                     return sabotageActive && Engineer.remainingFixes > 0 && CachedPlayer.LocalPlayer.PlayerControl.CanMove;
                 },
-                () => {},
+                () => { if (Engineer.resetFixesAfterMeeting) Engineer.resetEngineerFixes(); },
                 Engineer.getButtonSprite(),
                 new Vector3(-1.8f, -0.06f, 0),
                 __instance,

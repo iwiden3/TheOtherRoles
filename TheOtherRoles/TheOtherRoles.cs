@@ -159,19 +159,34 @@ namespace TheOtherRoles
             public static Color color = new Color32(0, 40, 245, byte.MaxValue);
             private static Sprite buttonSprite;
 
-            public static int remainingFixes = 1;           
+            public static int remainingFixes = 1;
+            public static int engineerNumberOfFixes = 1;
             public static bool highlightForImpostors = true;
-            public static bool highlightForTeamJackal = true; 
-
+            public static bool highlightForTeamJackal = true;
+            public static bool resetFixesAfterMeeting = false;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
                 buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RepairButton.png", 115f);
                 return buttonSprite;
             }
 
+            private static bool createResetFixesAfterMeeting(int engineerFixesPer)
+            {
+                //0 for per round
+                //1 for per game
+                return engineerFixesPer == 0;
+            }
+
+            public static void resetEngineerFixes()
+            {
+                remainingFixes = engineerNumberOfFixes;
+            }
+
             public static void clearAndReload() {
                 engineer = null;
                 remainingFixes = Mathf.RoundToInt(CustomOptionHolder.engineerNumberOfFixes.getFloat());
+                engineerNumberOfFixes = Mathf.RoundToInt(CustomOptionHolder.engineerNumberOfFixes.getFloat());
+                resetFixesAfterMeeting = createResetFixesAfterMeeting(CustomOptionHolder.engineerFixPer.getSelection());
                 highlightForImpostors = CustomOptionHolder.engineerHighlightForImpostors.getBool();
                 highlightForTeamJackal = CustomOptionHolder.engineerHighlightForTeamJackal.getBool();
             }

@@ -107,6 +107,7 @@ namespace TheOtherRoles {
         public static CustomOption portalmakerLogHasTime;
 
         public static CustomOption engineerSpawnRate;
+        public static CustomOption engineerFixPer;
         public static CustomOption engineerNumberOfFixes;
         public static CustomOption engineerHighlightForImpostors;
         public static CustomOption engineerHighlightForTeamJackal;
@@ -408,8 +409,9 @@ namespace TheOtherRoles {
             mayorTasksNeededToSeeVoteColors = CustomOption.Create(82, Types.Crewmate, "Completed Tasks Needed To See Vote Colors", 5f, 0f, 20f, 1f, mayorCanSeeVoteColors);
             mayorMeetingButton = CustomOption.Create(83, Types.Crewmate, "Mobile Emergency Button", true, mayorSpawnRate);
             mayorMaxRemoteMeetings = CustomOption.Create(84, Types.Crewmate, "Number Of Remote Meetings", 1f, 1f, 5f, 1f, mayorMeetingButton);
-
+            
             engineerSpawnRate = CustomOption.Create(90, Types.Crewmate, cs(Engineer.color, "Engineer"), rates, null, true);
+            engineerFixPer = CustomOption.Create(7000, Types.Crewmate,"Sabotages Fixes Per", new string[] { "Round", "Game" }, engineerSpawnRate);
             engineerNumberOfFixes = CustomOption.Create(91, Types.Crewmate, "Number Of Sabotage Fixes", 1f, 1f, 3f, 1f, engineerSpawnRate);
             engineerHighlightForImpostors = CustomOption.Create(92, Types.Crewmate, "Impostors See Vents Highlighted", true, engineerSpawnRate);
             engineerHighlightForTeamJackal = CustomOption.Create(93, Types.Crewmate, "Jackal and Sidekick See Vents Highlighted ", true, engineerSpawnRate);
