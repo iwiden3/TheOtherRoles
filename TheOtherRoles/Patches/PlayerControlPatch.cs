@@ -234,6 +234,13 @@ namespace TheOtherRoles.Patches {
             setPlayerOutline(Jackal.currentTarget, Palette.ImpostorRed);
         }
 
+        static void cultistSetFollower() {
+            var untargetablePlayers = new List<PlayerControl>();
+            if (Mini.mini != null && !Mini.isGrownUp()) untargetablePlayers.Add(Mini.mini); // Exclude Jackal from targeting the Mini unless it has grown up
+            Cultist.currentFollower = setTarget(untargetablePlayers: untargetablePlayers);
+            setPlayerOutline(Cultist.currentFollower, Palette.ImpostorRed);
+        }
+
         static void sidekickSetTarget() {
             if (Sidekick.sidekick == null || Sidekick.sidekick != CachedPlayer.LocalPlayer.PlayerControl) return;
             var untargetablePlayers = new List<PlayerControl>();
@@ -881,6 +888,8 @@ namespace TheOtherRoles.Patches {
                 trackerUpdate();
                 // Jackal
                 jackalSetTarget();
+                //Cultist
+                cultistSetFollower();
                 // Sidekick
                 sidekickSetTarget();
                 // Impostor

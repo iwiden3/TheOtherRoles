@@ -56,6 +56,7 @@ namespace TheOtherRoles
         Pursuer,
         Witch,
         Ninja,
+        Cultist,
         Crewmate,
         Impostor,
         // Modifier ---
@@ -130,7 +131,9 @@ namespace TheOtherRoles
         SetFirstKill,
         Invert,
         SetTiebreak,
-        SetInvisible
+        SetInvisible,
+        CultistCreateImposter,
+        createCrewmate
     }
 
     public static class RPCProcedure {
@@ -172,6 +175,13 @@ namespace TheOtherRoles
                     player.Data.IsDead = true;
                 }
             }
+        }
+
+        public static void setCrewmate(PlayerControl player)
+        {
+            FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
+            if (player.PlayerId == CachedPlayer.LocalPlayer.PlayerId) CachedPlayer.LocalPlayer.PlayerControl.moveable = true;
+
         }
 
         public static void setRole(byte roleId, byte playerId) {
@@ -298,7 +308,11 @@ namespace TheOtherRoles
                     case RoleId.Ninja:
                         Ninja.ninja = player;
                         break;
+                    case RoleId.Cultist:
+                        Cultist.cultist = player;
+                        break;
                     }
+                   
                 }
         }
 
@@ -626,6 +640,31 @@ namespace TheOtherRoles
             Jackal.canCreateSidekick = false;
         }
 
+        public static void createCrewmateTest(byte targetId) {
+            PlayerControl player = Helpers.playerById(targetId);
+            if (player == null) return;
+
+            bool wasImpostor = player.Data.Role.IsImpostor;  // This can only be reached if impostors can be sidekicked.
+            FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
+            erasePlayerRoles(player.PlayerId, true);
+            if (player.PlayerId == CachedPlayer.LocalPlayer.PlayerId) CachedPlayer.LocalPlayer.PlayerControl.moveable = true;   
+        }
+
+        public static void turnToImpostor(byte targetId) {
+            PlayerControl player = Helpers.playerById(targetId);
+            player.Data.Role.TeamType = RoleTeamTypes.Impostor;
+            FastDestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Impostor);
+            player.SetKillTimer(PlayerControl.GameOptions.KillCooldown);
+            System.Console.WriteLine("PROOF I AM IMP VANILLA ROLE: "+player.Data.Role.IsImpostor);
+           /* foreach (var player2 in PlayerControl.AllPlayerControls) {
+                if (player2.Data.Role.IsImpostor && CachedPlayer.LocalPlayer.PlayerControl.Data.Role.IsImpostor) {
+                    player.cosmetics.nameText.color = Palette.ImpostorRed;
+                }
+            }*/
+            Cultist.needsFollower = false;
+        }
+
+
         public static void sidekickPromotes() {
             Jackal.removeCurrentJackal();
             Jackal.jackal = Sidekick.sidekick;
@@ -673,7 +712,8 @@ namespace TheOtherRoles
             if (player == Cleaner.cleaner) Cleaner.clearAndReload();
             if (player == Warlock.warlock) Warlock.clearAndReload();
             if (player == Witch.witch) Witch.clearAndReload();
-            if (player == Ninja.ninja) Ninja.clearAndReload();
+            if (player == Cultist.cultist) Cultist.clearAndReload();
+
 
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();
@@ -1161,7 +1201,14 @@ namespace TheOtherRoles
                     byte invisiblePlayer = reader.ReadByte();
                     byte invisibleFlag = reader.ReadByte();
                     RPCProcedure.setInvisible(invisiblePlayer, invisibleFlag);
-                    break;  
+                    break;
+                case (byte)CustomRPC.CultistCreateImposter:
+                    RPCProcedure.turnToImpostor(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.createCrewmate: 
+                    RPCProcedure.createCrewmateTest(reader.ReadByte());
+                    break;
+
             }
         }
     }

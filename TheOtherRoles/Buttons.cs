@@ -35,6 +35,7 @@ namespace TheOtherRoles
         public static CustomButton jackalKillButton;
         public static CustomButton sidekickKillButton;
         private static CustomButton jackalSidekickButton;
+        private static CustomButton cultistTurnButton;
         private static CustomButton lighterButton;
         private static CustomButton eraserButton;
         private static CustomButton placeJackInTheBoxButton;        
@@ -822,6 +823,25 @@ namespace TheOtherRoles
                 KeyCode.H,
                 mirror: true
             );
+
+                        // Jackal Sidekick Button
+            cultistTurnButton = new CustomButton(
+                () => {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.CultistCreateImposter, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Cultist.currentFollower.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.turnToImpostor(Cultist.currentFollower.PlayerId);
+                },
+                () => { return Cultist.needsFollower && Cultist.cultist != null && Cultist.cultist == CachedPlayer.LocalPlayer.PlayerControl && !CachedPlayer.LocalPlayer.Data.IsDead; },
+                () => { return Cultist.needsFollower && Cultist.currentFollower != null && CachedPlayer.LocalPlayer.PlayerControl.CanMove; },
+                () => { jackalSidekickButton.Timer = jackalSidekickButton.MaxTimer;},
+                Cultist.getSidekickButtonSprite(),
+                new Vector3(-1.8f, -0.06f, 0),
+                __instance,
+                KeyCode.F
+            );
+
+
 
             // Jackal Sidekick Button
             jackalSidekickButton = new CustomButton(

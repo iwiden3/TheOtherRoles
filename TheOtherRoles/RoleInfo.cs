@@ -68,6 +68,7 @@ namespace TheOtherRoles
         public static RoleInfo crewmate = new RoleInfo("Crewmate", Color.white, "Find the Impostors", "Find the Impostors", RoleId.Crewmate);
         public static RoleInfo witch = new RoleInfo("Witch", Witch.color, "Cast a spell upon your foes", "Cast a spell upon your foes", RoleId.Witch);
         public static RoleInfo ninja = new RoleInfo("Ninja", Ninja.color, "Surprise and assassinate your foes", "Surprise and assassinate your foes", RoleId.Ninja);
+        public static RoleInfo cultist = new RoleInfo("Cultist", Cultist.color, "Recruit for your cause", "Recruit for your cause", RoleId.Cultist);
 
 
 
@@ -174,6 +175,7 @@ namespace TheOtherRoles
             if (p == Warlock.warlock) infos.Add(warlock);
             if (p == Witch.witch) infos.Add(witch);
             if (p == Ninja.ninja) infos.Add(ninja);
+            if (p == Cultist.cultist) infos.Add(cultist);
             if (p == Detective.detective) infos.Add(detective);
             if (p == TimeMaster.timeMaster) infos.Add(timeMaster);
             if (p == Medic.medic) infos.Add(medic);

@@ -85,6 +85,8 @@ namespace TheOtherRoles.Patches {
             impSettings.Add((byte)RoleId.BountyHunter, CustomOptionHolder.bountyHunterSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Witch, CustomOptionHolder.witchSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Ninja, CustomOptionHolder.ninjaSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.Cultist, CustomOptionHolder.cultistSpawnRate.getSelection());
+
 
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Arsonist, CustomOptionHolder.arsonistSpawnRate.getSelection());
@@ -125,6 +127,28 @@ namespace TheOtherRoles.Patches {
         }
 
         private static void assignSpecialRoles(RoleAssignmentData data) {
+
+            //Assign Cultist
+            if (data.impostors.Count >= 2 && data.maxImpostorRoles >= 2 && (rnd.Next(1, 101) <= CustomOptionHolder.cultistSpawnRate.getSelection() * 10))
+            {
+                var index = rnd.Next(0, data.impostors.Count);
+
+                PlayerControl playerControl = data.impostors[index];
+                playerControl.Data.Role.TeamType = RoleTeamTypes.Crewmate;
+
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(CachedPlayer.LocalPlayer.PlayerControl.NetId, (byte)CustomRPC.createCrewmate, Hazel.SendOption.Reliable, -1);
+                writer.Write(playerControl.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.createCrewmateTest(playerControl.PlayerId);
+
+                data.impostors.RemoveAt(index);
+                data.crewmates.Add(playerControl);
+                setRoleToRandomPlayer((byte)RoleId.Cultist, data.impostors);
+                
+                data.maxImpostorRoles -= 2;
+
+            }
+
             // Assign Mafia
             if (data.impostors.Count >= 3 && data.maxImpostorRoles >= 3 && (rnd.Next(1, 101) <= CustomOptionHolder.mafiaSpawnRate.getSelection() * 10)) {
                 setRoleToRandomPlayer((byte)RoleId.Godfather, data.impostors);
